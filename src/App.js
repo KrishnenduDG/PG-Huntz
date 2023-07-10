@@ -8,7 +8,6 @@ import { authContext } from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
 import AddPGPage from "./pages/AddPGPage";
 import ProfilePage from "./pages/ProfilePage";
-import PGPage from "./pages/PGPage";
 import EditPGPage from "./pages/EditPGPage"
 
 // Importing the Components
@@ -59,7 +58,6 @@ function App() {
           <Navbar />
           <Routes>
             <Route path={"/"} element={<HomePage />} />
-            <Route path={"/:id"} element={<PGPage />} />
 
             <Route
               path={"/admin/add"}

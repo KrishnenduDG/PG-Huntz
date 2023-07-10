@@ -20,6 +20,8 @@ import {
 import { signOut, signInWithPopup,GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../firebase.js";
 
+import UserService from "../services/UserService.js";
+
 export const GAuthProvider = new GoogleAuthProvider(auth);
 
 const NavLink = ({ name, destination }) => (
@@ -36,15 +38,20 @@ const NavLink = ({ name, destination }) => (
   </Link>
 );
 
+const userServiceInstance = new UserService();
+
 const NavComponent = () => {
   // Grabbing the User Context
   const { user, setUser } = useContext(authContext);
+
 
   const handleGoogleAuth = async () => {
     const res = await signInWithPopup(auth, GAuthProvider);
     setUser(res.user);
 
-    console.log(res.user.photoURL);
+    const userAddRes = await userServiceInstance.createUser({uid:res.user.uid,email:res.user.email,pic_url:res.user.photoURL});
+
+    console.log(userAddRes);
   };
 
   const handleSignOut = async () => {

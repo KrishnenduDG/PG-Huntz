@@ -1,52 +1,73 @@
-import React,{useContext,useState} from 'react'
+import React, { useContext, useState } from "react";
 
-import { authContext } from '../context/AuthContext.js';
+import { authContext } from "../context/AuthContext.js";
 
 import TerritoryService from "../services/TerritoryService.js";
 import PGService from "../services/PGService.js";
 
-import {
-  Text,Image,FormLabel,Input,Container,Button,Select
-} from "@chakra-ui/react";
-import { redirect, useNavigate } from 'react-router-dom';
 
-  // ToDo - Dependency Injection  
-    const TerritoryServiceInstance = new TerritoryService();
-    const PGServiceInstance = new PGService();
+import { State } from "country-state-city";
+import {
+  Text,
+  Image,
+  FormLabel,
+  Input,
+  Container,
+  Button,
+  Select,
+} from "@chakra-ui/react";
+import { redirect, useNavigate } from "react-router-dom";
+
+// ToDo - Dependency Injection
+const TerritoryServiceInstance = new TerritoryService();
+const PGServiceInstance = new PGService();
 
 const AddPGPage = () => {
+  // Grabbing the User Context
+  const { user, setUser } = useContext(authContext);
 
-
-     // Grabbing the User Context
-    const {user,setUser} = useContext(authContext);
-
-    const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [state, setState] = useState(null);
-  const [city,setCity] = useState(null);
-    const [name,setName] = useState('');
-    const [address,setAddress] = useState('')
-    const [minPrice,setMinPrice] = useState(null);
-    const [maxPrice, setMaxPrice] = useState(null);
+  const [city, setCity] = useState(null);
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [minPrice, setMinPrice] = useState(null);
+  const [maxPrice, setMaxPrice] = useState(null);
 
-    const [pic,setPic] = useState("");
-    const handleStateChange = (e) => {setState(e.target.value);setCity(TerritoryServiceInstance.getCities(e.target.value)[0].name)};
-    const handleCityChange = (e) => {console.log(e.target.value); setCity(e.target.value)};
+  const [pic, setPic] = useState("");
+  const handleStateChange = (e) => {
+    setState(e.target.value);
 
+    
+    setCity(
+      TerritoryServiceInstance.getCities(State.getStateByCodeAndCountry('IN',e.target.value)).name
+    );
+  };
+  const handleCityChange = (e) => {
+    console.log(e.target.value);
+    setCity(e.target.value);
+  };
 
-    const handleFileChange = (e) => { setPic(e.target.files[0])};
+  const handleFileChange = (e) => {
+    setPic(e.target.files[0]);
+  };
 
-        const handleSubmit = async (e) => {
-          console.log("Hello");
-        e.preventDefault();
-        if(maxPrice < minPrice) return alert("Max Price cannot be smaller than Min Price!")
+  const handleSubmit = async (e) => {
+    console.log("Hello");
+    e.preventDefault();
+    if (maxPrice < minPrice)
+      return alert("Max Price cannot be smaller than Min Price!");
 
-          const reviews = [];
-          const res = await PGServiceInstance.addPG({name,address,minPrice,maxPrice,city,state,reviews,pic},user.uid);
+    const reviews = [];
+    const res = await PGServiceInstance.addPG(
+      { name, address, minPrice, maxPrice, city, state: TerritoryServiceInstance.getStateFromCode(state).name, reviews, pic },
+      user.uid
+    );
 
-          if(res) navigate('/admin/profile')
-          else return alert("Sorry! The PG Could not be Added!")
-    }
+    if (res) navigate("/admin/profile");
+    else return alert("Sorry! The PG Could not be Added!");
+  };
 
   return (
     <>
@@ -108,7 +129,15 @@ const AddPGPage = () => {
             accept="image/jpg,image/png"
           />
         </FormLabel>
-        <Button colorScheme='orange' type="submit" isDisabled = {!(state && city&&name&&address&&minPrice&&maxPrice&&pic)}>Submit Your PG</Button>
+        <Button
+          colorScheme="orange"
+          type="submit"
+          isDisabled={
+            !(state && city && name && address && minPrice && maxPrice && pic)
+          }
+        >
+          Submit Your PG
+        </Button>
       </form>
 
       {pic && (
@@ -119,6 +148,6 @@ const AddPGPage = () => {
       )}
     </>
   );
-}
+};
 
-export default AddPGPage
+export default AddPGPage;

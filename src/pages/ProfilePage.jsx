@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 
 const ProfilePage = () => {
   // Grabbing the User Context
-  const { user, setUser } = useContext(authContext);
+  const { user } = useContext(authContext);
     const [pgList,setPgList] = useState([]);
 
     const PGServiceInstance = new PGService();
