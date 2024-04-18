@@ -29,6 +29,7 @@ class PGService {
       });
       return data_update_res.id;
     } catch (error) {
+      console.log(error);
       return null;
     }
   }
@@ -53,6 +54,7 @@ class PGService {
         await deleteDoc(reqd_doc);
         return true
     } catch (error) {
+      console.log(error);
         return false
     }
 }
